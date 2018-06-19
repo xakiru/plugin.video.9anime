@@ -176,8 +176,8 @@ class NineAnimeBrowser(BrowserBase.BrowserBase):
     def search_history(self,search_array):
     	result = map(self._parse_history_view,search_array)
     	result.insert(0,utils.allocate_item("New Search", "search", True))
+    	result.insert(len(result),utils.allocate_item("Clear..", "clear_history", True))
     	return result
-        #all_results += self._handle_paging(results, base_plugin_url, page)
 
     def get_recent_dubbed(self,  page=1):
         return self._get_by_filter('recent_dubbed', {

@@ -35,6 +35,8 @@ WATCHLIST_ITEMS = [
     (control.lang(30305), "watchlist_planned")
 ]
 
+HISTORY_DELIM = ":_:"
+
 _BROWSER = NineAnimeBrowser()
 control.setContent('tvshows');
 
@@ -221,35 +223,33 @@ def PLANNED_PAGES(payload, params):
     return control.draw_items(_BROWSER.get_watchlist_planned(int(payload)), unbookmark_cm)
 
 @route('search_history')
-def SEARCH(payload, params):
-    history_delimiter=":_:"
+def SEARCH_HISTORY(payload, params):
     history = control.getSetting("9anime.history")
-    history_array = history.split(history_delimiter)
+    history_array = history.split(HISTORY_DELIM)
     if history != "" and "Yes" in control.getSetting('searchhistory') :
         return control.draw_items(_BROWSER.search_history(history_array))
     else :
         return SEARCH(payload,params)
 
+@route('clear_history')
+def CLEAR_HISTORY(payload, params):
+    control.setSetting("9anime.history","")
+    return LIST_MENU(payload, params)
+
 @route('search')
 def SEARCH(payload, params):
-    history_delimiter=":_:"
-    history = control.getSetting("9anime.history")
-    history_array = history.split(history_delimiter)
     query = control.keyboard(control.lang(30007))
     if query:
-        if history != "" :
-            query = query+history_delimiter
-        history=query+history
-        while history.count(history_delimiter) > 6 :
-            history=history.rsplit(history_delimiter, 1)[0]
-        control.setSetting("9anime.history",history)
+        if "Yes" in control.getSetting('searchhistory') :
+            history = control.getSetting("9anime.history")
+            if history != "" :
+                query = query+HISTORY_DELIM
+            history=query+history
+            while history.count(HISTORY_DELIM) > 6 :
+                history=history.rsplit(HISTORY_DELIM, 1)[0]
+            control.setSetting("9anime.history",history)
         return control.draw_items(_BROWSER.search_site(query))
     return False   
-
-@route('clear')
-def CLEAR(payload, params):
-    control.setSetting("9anime.history","")
-    return SEARCH(payload,params)
   
 @route('search/*')
 def SEARCH_PAGES(payload, params):
