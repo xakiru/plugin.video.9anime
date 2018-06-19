@@ -249,8 +249,8 @@ def SEARCH(payload, params):
                 history=history.rsplit(HISTORY_DELIM, 1)[0]
             control.setSetting("9anime.history",history)
         return control.draw_items(_BROWSER.search_site(query))
-    return False   
-  
+    return False
+
 @route('search/*')
 def SEARCH_PAGES(payload, params):
     query, page = payload.rsplit("/", 1)
